@@ -1,0 +1,13 @@
+"D:\IAR\arm\bin\armproc.dll" 
+
+"D:\IAR\arm\bin\armjlink2.dll" 
+
+"C:\Users\Dream\Desktop\seekfree-MM32SPIN27_Library-master\MM32SPIN27_Library\Seekfree_MM32SPIN27PS_Opensource_Library\Project\IAR\program\Debug\Exe\MM32SPIN27PS.out" 
+
+--plugin="D:\IAR\arm\bin\armbat.dll" 
+
+--flash_loader="D:\IAR\arm\config\flashloader\MindMotion\FlashMM32SPIN27PS.board" 
+
+
+
+

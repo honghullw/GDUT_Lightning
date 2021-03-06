@@ -1,1 +1,0 @@
-# GDUT_Lightning
