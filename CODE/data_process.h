@@ -16,8 +16,9 @@ void InductanceData();
 void AngularSpeedAngleCalculate();
 void FuseAngleCalculate();
 void ADCFilterProcess();
-void DirectionErrorOutput2();
-void DirectionErrorOutput2();
+void InductanceProcess();
+float DirectionErrorOutput1();
+float DirectionErrorOutput2();
 
 void TotalDataProcess();//数据处理总部分
 

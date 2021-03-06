@@ -1,16 +1,16 @@
 #include "element_process.h"
 
-  uint16 peak_value;
-  uint16 sum_value;
-  uint16 element_flag;//1为识别弯道，2为识别十字，3为识别弯道
+  float peak_value;
+  float sum_value;
+  float element_flag;//1为识别弯道，2为识别十字，3为识别弯道
 
-  
+  extern a data;
   
 void Element()//赛道元素特征提取函数
 {
   uint16 get_data_num=3;
   uint16 i,j,k;
-  while(get_data--){//连续三次检测防止在某些非该元素的特定点也符合元素的一定特征
+  while(get_data_num--){//连续三次检测防止在某些非该元素的特定点也符合元素的一定特征
     
 //    /*----------------环岛----------------*/
 //    
@@ -57,21 +57,21 @@ void Element()//赛道元素特征提取函数
     
     
 
-      peak_value=(peak_value<data.inductance_normalization[2]?data.inductance_normalization[2]:peak_value)//存储环岛峰值，用于出环岛标志消除
+      peak_value=(peak_value<data.inductance_normalization[2]?data.inductance_normalization[2]:peak_value);//存储环岛峰值，用于出环岛标志消除
     
     if(peak_value>MAX1)
       i++;
-    else if(data.inductance_normalization[1]>CROSS_MAX&&data.inductance_noramlization[3]>CROSS_MAX&&CROSS_SPECIAL_SCOPE_MAX>data.filter_inductance_data[2]>CROSS_SPECIAL_SCOPE_MIN)
+    else if(data.inductance_normalization[1]>CROSS_MAX&&data.inductance_normalization[3]>CROSS_MAX&&CROSS_SPECIAL_SCOPE_MAX>data.filter_inductance_data[2]>CROSS_SPECIAL_SCOPE_MIN)
       j++;
-    else if(data.inductance_normalization[2]>RAMP_MAX&&data.inductance_normalization[1]<RAMP_MIN&&inductance_normalization[2]<RAMP_MIN)
+    else if(data.inductance_normalization[2]>RAMP_MAX&&data.inductance_normalization[1]<RAMP_MIN&&data.inductance_normalization[2]<RAMP_MIN)
       k++;
   }
-  if(i=3)
+  if(i==3)
     element_flag=1;
-  else if(j=3)
+  else if(j==3)
     element_flag=2;
-  else if(k=3)
-    element_fag=3;
+  else if(k==3)
+    element_flag=3;
 }
 
 

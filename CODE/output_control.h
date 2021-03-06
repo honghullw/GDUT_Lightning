@@ -3,7 +3,7 @@
 
 #include "headfile.h"
 
-void MotorInput();
+void MotorControl();
 void MotorDrive(uint32 motor1_duty_cycle,uint32 motor2_duty_cycle);
 
 void TotalMotorDrive();

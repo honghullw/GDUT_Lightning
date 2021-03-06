@@ -3,6 +3,8 @@
 
 #include "headfile.h"
 
+
+
 typedef struct 
 {
   //直立
@@ -29,5 +31,9 @@ typedef struct
     float Integral;                         //积分项I
     float Differential;                     //微分项D
 }e;
+
+float PidControl();
+float CasecadePid(void);
+float OtherPid(void);
 
 #endif

@@ -15,22 +15,22 @@
 typedef struct
 {
   
-    double inductance_data[inductance_num][sample_num];//inductance_num个电感的数据
-    double filter_inductance_data[inductance_num];//核心
-    double inductance_normalization[inductance_num];
+    float inductance_data[inductance_num][sample_num];//inductance_num个电感的数据
+    float filter_inductance_data[inductance_num];//核心
+    float inductance_normalization[inductance_num];
     
-    double current_loop_data[current_num][current_sample_num];
-    double filter_current_loop_data[current_num];//核心
+    float current_loop_data[current_num][current_sample_num];
+    float filter_current_loop_data[current_num];//核心
     
 //    double 
 }a;
 
 typedef struct 
 {
-  double left_wheel_pulse_num;
-  double right_wheel_pulse_num;
-  double wheel_pulse_num;//核心
-  double car_speed;//只是看几米每秒，用不上(用于pid比较方便)
+  float left_wheel_pulse_num;
+  float right_wheel_pulse_num;
+  float wheel_pulse_num;//核心
+  float car_speed;//只是看几米每秒，用不上(用于pid比较方便)
 }b;
 
 typedef struct
@@ -43,11 +43,11 @@ typedef struct
   int16 angular_speed_y_data;
   int16 angular_speed_z_data;
   
-  double accelerate_angle_value;         //加速度计的俯仰角值
-  double angularspeed_angle_value;       //角速度的俯仰角值
+  float accelerate_angle_value;         //加速度计的俯仰角值
+  float angularspeed_angle_value;       //角速度的俯仰角值
   
-  double fuse_angle_value;              //融合后的俯仰角值
-  double fuse_angle_pid_value;          //用于pid的修正角度值
+  float fuse_angle_value;              //融合后的俯仰角值
+  float fuse_angle_pid_value;          //用于pid的修正角度值
 }c;
 
 void InductanceData();
