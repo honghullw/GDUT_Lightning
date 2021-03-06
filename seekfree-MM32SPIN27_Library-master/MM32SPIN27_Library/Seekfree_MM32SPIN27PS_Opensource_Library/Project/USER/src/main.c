@@ -47,13 +47,19 @@ int main(void)
 	board_init(true);																// 初始化 debug 输出串口
         AllInit();
 	//此处编写用户代码(例如：外设初始化代码等)
+        
+        tim_interrupt_disabnle (TIM_3);
 	
 	//此处编写用户代码(例如：外设初始化代码等)
 	while(1)
 	{
 		//此处编写需要循环执行的代码
-          MotorControl();//打算持续运行
+                                                  //MotorControl();//打算持续运行
           Mode();//人机交互模式
+          
+          //test
+          git_pwm(5000*0.3,5000*0.3);
+          
 		//此处编写需要循环执行的代码
 	}
 }

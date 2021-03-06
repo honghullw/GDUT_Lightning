@@ -2441,6 +2441,12 @@
             <name>$PROJ_DIR$\..\..\CODE\pid.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\..\CODE\test.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\CODE\test.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\CODE\本文件夹作用.txt</name>
         </file>
     </group>

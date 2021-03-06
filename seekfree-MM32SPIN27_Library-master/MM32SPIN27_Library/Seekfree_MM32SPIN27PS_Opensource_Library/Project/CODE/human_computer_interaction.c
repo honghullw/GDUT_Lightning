@@ -14,7 +14,10 @@ extern e speed_pid;
 extern e direction_pid;
 extern e current_pid;
 
-
+extern PID Speed;
+extern PID Angle;
+extern PID Gyro;
+extern PID Turn;
 
 uint16 mode_flag;
 uint16 interface_flag=0;
@@ -32,7 +35,7 @@ void human_computer_interaction_init()
 }
 
 
-void OledViewSpecification()//告诉用户如何操作按一次按键换一个显示页面//拨码开关为0000时按键进入选择模式//说明与菜单
+void OledViewSpecification()//告诉用户如何操作按一次按键换一个显示页面//拨码开关为0000时按键进入选择模式//说明与菜单//一级界面
 {
     oled_p6x8str(0,0,"Specification");
 
@@ -45,7 +48,7 @@ void OledViewSpecification()//告诉用户如何操作按一次按键换一个显示页面//拨码开关
 
 }
 /*---------------------------------------------------------------------------oled-------------------------------------------------------------------------------------------------*/
-void OledViewPhysicalCondition()//一级界面
+void OledViewPhysicalCondition()//二级界面
 {
 
     oled_p6x8str(50,0,"Oled Physical Condition");
@@ -66,64 +69,81 @@ void OledViewPhysicalCondition()//一级界面
 }
 
 
-void OledViewParameters()//二级界面
+void OledViewParameters_f()//三级界面1
 {
 
     oled_p6x8str(50,0,"Car Parameter");
 
-    //直立pid参数
-    oled_p6x8str(50,3,"Up Pid");
+    //角速度环pid参数
+    oled_p6x8str(50,3,"Gyro Pid");
 
     oled_p6x8str(0,4,"kp");
-    oled_printf_float(50,4,up_pid.kp,5,1);//直立P
+    oled_printf_float(50,4,Gyro.P,5,1);//角速度P
 
     oled_p6x8str(0,5,"ki");
-    oled_printf_float(50,5,up_pid.ki,5,1);//直立I
+    oled_printf_float(50,5,Gyro.I,5,1);//角速度I
 
     oled_p6x8str(0,6,"kd");
-    oled_printf_float(50,6,up_pid.kd,5,1);//直立D
+    oled_printf_float(50,6,Gyro.D,5,1);//角速度D
+    
+    //角度环pid参数
+    oled_p6x8str(50,8,"Angle Pid");
 
-
-    //速度pid参数
-    oled_p6x8str(50, 8,"Up Pid");
-
-    oled_p6x8str(0,8,"kp");
-    oled_printf_float(50,9,speed_pid.kp,5,1);//速度P
+    oled_p6x8str(0,9,"kp");
+    oled_printf_float(50,9,Angle.P,5,1);//角度P
 
     oled_p6x8str(0,10,"ki");
-    oled_printf_float(50,10,speed_pid.ki,5,1);//速度I
+    oled_printf_float(50,10,Angle.I,5,1);//角度I
 
     oled_p6x8str(0,11,"kd");
-    oled_printf_float(50,11,speed_pid.kd,5,1);//速度D
-
-    //转向pid参数
-    oled_p6x8str(50,13,"Up Pid");
-
-    oled_p6x8str(0,14,"kp");
-    oled_printf_float(50,14,direction_pid.kp,5,1);//转向P
-
-    oled_p6x8str(0,15,"ki");
-    oled_printf_float(50,15,direction_pid.ki,5,1);//转向I
-
-    oled_p6x8str(0,16,"kd");
-    oled_printf_float(50,16,direction_pid.kd,5,1);//转向D
+    oled_printf_float(50,11,Angle.D,5,1);//角度D
 
 }
 
-void OledViewCoefficient()//三级页面
+void OledViewParameters_s()//三级界面2
 {
-    oled_p6x8str(50,0,"Coefficient");
+    
+    oled_p6x8str(50,0,"Car Parameter");
+    //速度环pid参数
+    oled_p6x8str(50,3,"Speed Pid");
 
-    oled_p6x8str(0,1,"zero_angular_speed_y_data");
-    oled_printf_float(50,1,zero_angular_speed_y_data,5,1);//转向P
+    oled_p6x8str(0,4,"kp");
+    oled_printf_float(50,9,Speed.P,5,1);//速度P
 
-    oled_p6x8str(0,2,"change_angle_coefficient");
-    oled_printf_float(50,2,change_angle_coefficient,5,1);//转向I
+    oled_p6x8str(0,5,"ki");
+    oled_printf_float(50,10,Speed.I,5,1);//速度I
 
-    oled_p6x8str(0,3,"complementary_coefficient");
-    oled_printf_float(50,3,complementary_coefficient,5,1);//转向D
+    oled_p6x8str(0,6,"kd");
+    oled_printf_float(50,11,Speed.D,5,1);//速度D
 
-}
+    //转向环pid参数
+    oled_p6x8str(50,8,"Direction Pid");
+
+    oled_p6x8str(0,9,"kp");
+    oled_printf_float(50,9,Turn.P,5,1);//转向P
+
+    oled_p6x8str(0,10,"ki");
+    oled_printf_float(50,10,Turn.I,5,1);//转向I
+
+    oled_p6x8str(0,11,"kd");
+    oled_printf_float(50,11,Turn.D,5,1);//转向D
+
+}    
+    
+//void OledViewCoefficient()//四级页面
+//{
+//    oled_p6x8str(50,0,"Coefficient");
+//
+//    oled_p6x8str(0,1,"zero_angular_speed_y_data");
+//    oled_printf_float(50,1,zero_angular_speed_y_data,5,1);//转向P
+//
+//    oled_p6x8str(0,2,"change_angle_coefficient");
+//    oled_printf_float(50,2,change_angle_coefficient,5,1);//转向I
+//
+//    oled_p6x8str(0,3,"complementary_coefficient");
+//    oled_printf_float(50,3,complementary_coefficient,5,1);//转向D
+//
+//}
 
 
 
@@ -172,95 +192,162 @@ void Mode()//拨码开关改变模式
             gpio_get(BM3) == 1 &&
             gpio_get(BM4) == 0)
         mode_flag=6;
-    else if
-        (gpio_get(BM1) == 0 &&
-            gpio_get(BM2) == 1 &&
-            gpio_get(BM3) == 1 &&
-            gpio_get(BM4) == 1)
-        mode_flag=7;
-    else if
-        (gpio_get(BM1) == 1 &&
-            gpio_get(BM2) == 0 &&
-            gpio_get(BM3) == 0 &&
-            gpio_get(BM4) == 0)
-        mode_flag=8;
-    else if
-        (gpio_get(BM1) == 1 &&
-            gpio_get(BM2) == 0 &&
-            gpio_get(BM3) == 0 &&
-            gpio_get(BM4) == 1)
-        mode_flag=9;
+//    else if
+//        (gpio_get(BM1) == 0 &&
+//            gpio_get(BM2) == 1 &&
+//            gpio_get(BM3) == 1 &&
+//            gpio_get(BM4) == 1)
+//        mode_flag=7;
+//    else if
+//        (gpio_get(BM1) == 1 &&
+//            gpio_get(BM2) == 0 &&
+//            gpio_get(BM3) == 0 &&
+//            gpio_get(BM4) == 0)
+//        mode_flag=8;
+//    else if
+//        (gpio_get(BM1) == 1 &&
+//            gpio_get(BM2) == 0 &&
+//            gpio_get(BM3) == 0 &&
+//            gpio_get(BM4) == 1)
+//        mode_flag=9;
 
     switch(mode_flag)
     {
         case 0:
-
-            if(gpio_get(KEY1) == 1)
+            oled_fill(0x00);
+            OledViewSpecification();//一级界面
+            break;
+            
+        case 1:
+            oled_fill(0x00);
+            OledViewParameters_s();//二级界面
+            break;
+            
+        case 2:
+           oled_fill(0x00);
+           if(gpio_get(KEY1) == 1)
             {
                 systick_delay_ms(100);
                 if(gpio_get(KEY1) == 1)
-                    interface_flag=1;//界面flag
-                OledViewSpecification();//一级界面
+                Gyro.P += 50;
+                OledViewParameters_f();//三级界面1
             }
             if(gpio_get(KEY2) == 1)
             {
                 systick_delay_ms(100);
                 if(gpio_get(KEY2) == 1)
-                    interface_flag=2;//界面flag
-                OledViewPhysicalCondition();//二级界面
+                Gyro.P -= 50;
+                OledViewParameters_f();//三级界面1
             }
             if(gpio_get(KEY3) == 1)
             {
                 systick_delay_ms(100);
                 if(gpio_get(KEY3) == 1)
-                    interface_flag=3;//界面flag
-                OledViewParameters();//三级界面
+                Gyro.I += 5;
+                OledViewParameters_f();//三级界面1
             }
-            if(gpio_get(KEY3) == 1)
+            if(gpio_get(KEY4) == 1)
             {
                 systick_delay_ms(100);
-                if(gpio_get(KEY3) == 1)
-                    interface_flag=4;//界面flag
-                OledViewCoefficient();//四级界面
+                if(gpio_get(KEY4) == 1)
+                Gyro.I -= 5;
+                OledViewParameters_f();//三级界面1
             }
             break;
-        case 1:
-            switch(interface_flag)
-                case 1:
-                    OledViewSpecification();//一级界面
-                    break;
-                case 2:
-                    OledViewPhysicalCondition();
-                    break;
-                case 3:
-                    OledViewParameters();//三级界面
-                    break;
-                case 4:
-                    OledViewCoefficient();//四级界面
-                    break;
-            if(gpio_get(KEY1) == 1)
+           
+        case 3:
+           oled_fill(0x00);
+           if(gpio_get(KEY1) == 1)
             {
                 systick_delay_ms(100);
                 if(gpio_get(KEY1) == 1)
-                  OledViewSpecification();
+                Angle.P += 50;
+                OledViewParameters_f();//三级界面1
             }
             if(gpio_get(KEY2) == 1)
             {
                 systick_delay_ms(100);
                 if(gpio_get(KEY2) == 1)
-                    OledViewPhysicalCondition();//二级界面
+                Angle.P -= 50;
+                OledViewParameters_f();//三级界面1
             }
             if(gpio_get(KEY3) == 1)
             {
                 systick_delay_ms(100);
                 if(gpio_get(KEY3) == 1)
-                    OledViewParameters();//三级界面
+                Angle.D += 50;
+                OledViewParameters_f();//三级界面1
+            }
+            if(gpio_get(KEY4) == 1)
+            {
+                systick_delay_ms(100);
+                if(gpio_get(KEY4) == 1)
+                Angle.D -= 50;
+                OledViewParameters_f();//三级界面1
+            }
+            break;
+           
+        case 4:
+           oled_fill(0x00);
+           if(gpio_get(KEY1) == 1)
+            {
+                systick_delay_ms(100);
+                if(gpio_get(KEY1) == 1)
+                Speed.P += 50;
+                OledViewParameters_s();//三级界面2
+            }
+            if(gpio_get(KEY2) == 1)
+            {
+                systick_delay_ms(100);
+                if(gpio_get(KEY2) == 1)
+                Speed.P -= 50;
+                OledViewParameters_s();//三级界面2
             }
             if(gpio_get(KEY3) == 1)
             {
                 systick_delay_ms(100);
                 if(gpio_get(KEY3) == 1)
-                    OledViewCoefficient();//四级界面
+                Speed.I += 5;
+                OledViewParameters_s();//三级界面2
+            }
+            if(gpio_get(KEY4) == 1)
+            {
+                systick_delay_ms(100);
+                if(gpio_get(KEY4) == 1)
+                Speed.I -= 5;
+                OledViewParameters_s();//三级界面2
+            }
+            break;
+        
+        case 5:
+           oled_fill(0x00);
+           if(gpio_get(KEY1) == 1)
+            {
+                systick_delay_ms(100);
+                if(gpio_get(KEY1) == 1)
+                Turn.P += 50;
+                OledViewParameters_s();//三级界面2
+            }
+            if(gpio_get(KEY2) == 1)
+            {
+                systick_delay_ms(100);
+                if(gpio_get(KEY2) == 1)
+                Turn.P -= 50;
+                OledViewParameters_s();//三级界面2
+            }
+            if(gpio_get(KEY3) == 1)
+            {
+                systick_delay_ms(100);
+                if(gpio_get(KEY3) == 1)
+                Turn.D += 50;
+                OledViewParameters_s();//三级界面2
+            }
+            if(gpio_get(KEY4) == 1)
+            {
+                systick_delay_ms(100);
+                if(gpio_get(KEY4) == 1)
+                Turn.D -= 50;
+                OledViewParameters_s();//三级界面2
             }
             break;
 

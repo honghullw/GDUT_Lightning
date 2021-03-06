@@ -3,7 +3,7 @@
 float LeftMotorOut;
 float RightMotorOut;
 
-struct PID Speed={SPEED_P,SPEED_I,SPEED_D},Angle={ANGLE_P,ANGLE_I,ANGLE_D},Gyro={GYRO_P,GYRO_I,GYRO_D},Turn={TURN_P,TURN_I,TURN_D};
+PID Speed={SPEED_P,SPEED_I,SPEED_D},Angle={ANGLE_P,ANGLE_I,ANGLE_D},Gyro={GYRO_P,GYRO_I,GYRO_D},Turn={TURN_P,TURN_I,TURN_D};
 
 extern e direction_pid;
  

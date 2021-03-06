@@ -16,11 +16,11 @@
 #define TURN_I 0
 #define TURN_D 0
 
-struct PID{
+typedef struct{
   float P;
   float I;
   float D;
-};
+}PID;
 
 float Speed_PID(float Speed_L,float Speed_R,float Speed_m);
 float Angle_PID(float Angle_Data,float Angle_m,float balance_angle);
