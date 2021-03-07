@@ -1,7 +1,14 @@
 #include "my_pid.h"
 
-float LeftMotorOut;
-float RightMotorOut;
+uint8 SpeedControlPeriod = 0;
+float SpeedControlOutNew = 0;
+float SpeedControlOutOld = 0;
+float SpeedControlOut = 0;
+
+uint8 DirectionControlPeriod = 0;
+float DirectionControlOutNew = 0;
+float DirectionControlOutOld = 0;
+float DirectionControlOut= 0;
 
 PID Speed={SPEED_P,SPEED_I,SPEED_D},Angle={ANGLE_P,ANGLE_I,ANGLE_D},Gyro={GYRO_P,GYRO_I,GYRO_D},Turn={TURN_P,TURN_I,TURN_D};
 
@@ -33,6 +40,9 @@ float Speed_PID(float Speed_L,float Speed_R,float Speed_m)
       
       if(Realize>30) Realize=30;
       if(Realize<-30) Realize=-30;
+      
+      SpeedControlOutOld= SpeedControlOutNew;
+      SpeedControlOutNew = Realize;
       
       return Realize;
 }
@@ -84,15 +94,33 @@ float Gyro_PID(float Gyro_Data,float Gyro_m)
 //转向环
 float Turn_PID(float Speed_c,float Speed_m)
 {
-      float Turn_Offset,Gyro_Ratio1,Car_Gyro_Y,DireControlOutNew;
+      float Turn_Offset,Gyro_Ratio1,Car_Gyro_Y,DireControl;
       Car_Gyro_Y = icm_gyro_y;
       Turn_Offset = direction_pid.actual_value;
       Gyro_Ratio1 = Car_Gyro_Y*Car_Gyro_Y/4000000+5.0;
       Car_Data.low_pass_parameter = 0.7;
       Car_Data.output_last = Gyro_Ratio1;
       Gyro_Ratio1 = FirstLowFilter(Car_Data,Gyro_Ratio1);
-      DireControlOutNew = (Speed_c*Speed_c/(Speed_m*Speed_m)+1)*Turn_Offset*Turn.P+Gyro_Ratio1*Car_Gyro_Y*Turn.D;
-      return DireControlOutNew;
+      DireControl = (Speed_c*Speed_c/(Speed_m*Speed_m)+1)*Turn_Offset*Turn.P+Gyro_Ratio1*Car_Gyro_Y*Turn.D;
+      
+      DirectionControlOutOld = DirectionControlOutNew;
+      DirectionControlOutNew = DireControl;
+      
+      return DireControl;
+}
+
+void SpeedControlOutput(void) //速度平滑输出函数
+{
+      float Value;
+      Value = SpeedControlOutNew - SpeedControlOutOld;
+      SpeedControlOut= Value * (SpeedControlPeriod + 1)/100 + SpeedControlOutOld;
+}
+
+void DirectionControlOutput(void) 
+{
+      float Value;
+      Value = DirectionControlOutNew - DirectionControlOutOld;
+      DirectionControlOut = Value * (DirectionControlPeriod + 1)/10+ DirectionControlOutOld;
 }
 
 //电机输出

@@ -27,5 +27,7 @@ float Angle_PID(float Angle_Data,float Angle_m,float balance_angle);
 float Gyro_PID(float Gyro_Data,float Gyro_m);
 float Turn_PID(float Speed_c,float Speed_m);
 void MotorOutput(float Gyro_Out,float Turn_Out);
+void SpeedControlOutput(void);
+void DirectionControlOutput(void);
 
 #endif

@@ -37,6 +37,16 @@ uint8 DirectionControlCount = 0;
 extern b speed_data;
 extern c angle_data;
 
+extern uint8 SpeedControlPeriod;
+extern float SpeedControlOutNew;
+extern float SpeedControlOutOld;
+extern float SpeedControlOut;
+
+extern uint8 DirectionControlPeriod;
+extern float DirectionControlOutNew;
+extern float DirectionControlOutOld;
+extern float DirectionControlOut;
+
 void TIM1_BRK_UP_TRG_COM_IRQHandler (void)
 {
 	uint32 state = TIM1->SR;														// ¶ÁÈ¡ÖÐ¶Ï×´Ì¬
@@ -52,6 +62,12 @@ void TIM2_IRQHandler (void)
 void TIM3_IRQHandler (void)
 {       
          MSEventCount ++;
+         SpeedControlPeriod ++;
+         SpeedControlOutput();
+         
+         DirectionControlPeriod ++;
+         DirectionControlOutput();
+           
          if(MSEventCount == 1) {
            
            InductanceData();
@@ -61,10 +77,10 @@ void TIM3_IRQHandler (void)
          } else if(MSEventCount == 2) {
            
            FuseAngleCalculate();
-           Angle_Out = Angle_PID(angle_data.fuse_angle_value,Speed_Out,BALANCE_ANGLE);
+           Angle_Out = Angle_PID(angle_data.fuse_angle_value,SpeedControlOut,BALANCE_ANGLE);
            AngularSpeedAngleCalculate();
            Gyro_Out = Gyro_PID(angle_data.fuse_angle_value,Angle_Out);
-           MotorOutput(Gyro_Out,Turn_Out);
+           MotorOutput(Gyro_Out,DirectionControlOut);
           
          } else if(MSEventCount == 3) {
            
@@ -73,6 +89,7 @@ void TIM3_IRQHandler (void)
              SpeedData();
              Speed_Out = Speed_PID(speed_data.left_wheel_pulse_num,speed_data.right_wheel_pulse_num,SPEED_PULSE);
              SpeedControlCount = 0;
+             SpeedControlPeriod = 0;
            } 
            SpeedData();
            Speed_Out = Speed_PID(speed_data.left_wheel_pulse_num,speed_data.right_wheel_pulse_num,SPEED_PULSE);
@@ -84,6 +101,7 @@ void TIM3_IRQHandler (void)
              get_icm20602_gyro_spi();
              Turn_Out = Turn_PID(speed_data.wheel_pulse_num,SPEED_PULSE);
              DirectionControlCount = 0;
+             DirectionControlPeriod = 0;
            }
            
          } else if(MSEventCount == 5) {
