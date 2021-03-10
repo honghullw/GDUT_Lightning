@@ -1,17 +1,21 @@
 #include "element_process.h"
 
-  float peak_value;
-  float sum_value;
-  float element_flag;//1为识别弯道，2为识别十字，3为识别弯道
+float peak_value;
+float sum_value;
+uint16 element_flag;//0为识别直道，1为识别弯道，2为识别环岛，3为识别十字
 
-  extern a data;
-  
-void Element()//赛道元素特征提取函数
+uint16 element_flag_array[4]={0};
+
+uint16 tracking_mode_flag;
+
+extern a data;
+
+void ElementRecognition()//赛道元素特征提取函数
 {
-  uint16 get_data_num=3;
-  uint16 i,j,k;
-  while(get_data_num--){//连续三次检测防止在某些非该元素的特定点也符合元素的一定特征
-    
+    uint16 get_data_num=3;
+    uint16 i,j,k;
+    while(get_data_num--){//连续三次检测防止在某些非该元素的特定点也符合元素的一定特征
+
 //    /*----------------环岛----------------*/
 //    
 //    //采集圆环ADC最大值//用手推
@@ -48,76 +52,145 @@ void Element()//赛道元素特征提取函数
 //    if(data)  
 //      
 //      
-    
-    
-    
+
+
+
         /*----------------环岛----------------*/
-    
-    //采集圆环ADC最大值//用手推
-    
-    
 
-      peak_value=(peak_value<data.inductance_normalization[2]?data.inductance_normalization[2]:peak_value);//存储环岛峰值，用于出环岛标志消除
-    
-    if(peak_value>MAX1)
-      i++;
-    else if(data.inductance_normalization[1]>CROSS_MAX&&data.inductance_normalization[3]>CROSS_MAX&&CROSS_SPECIAL_SCOPE_MAX>data.filter_inductance_data[2]>CROSS_SPECIAL_SCOPE_MIN)
-      j++;
-    else if(data.inductance_normalization[2]>RAMP_MAX&&data.inductance_normalization[1]<RAMP_MIN&&data.inductance_normalization[2]<RAMP_MIN)
-      k++;
-  }
-  if(i==3)
-    element_flag=1;
-  else if(j==3)
-    element_flag=2;
-  else if(k==3)
-    element_flag=3;
+        //采集圆环ADC最大值//用手推
+
+
+
+        peak_value=(peak_value<data.inductance_normalization[2]?data.inductance_normalization[2]:peak_value);//存储环岛峰值，用于出环岛标志消除
+
+        if(peak_value>MAX1)//环岛
+            i++;
+        else if(data.inductance_normalization[1]>CROSS_MAX&&data.inductance_normalization[3]>CROSS_MAX&&CROSS_SPECIAL_SCOPE_MAX>data.filter_inductance_data[2]>CROSS_SPECIAL_SCOPE_MIN)//十字
+            j++;
+        else if(data.inductance_normalization[2]>RAMP_MAX&&data.inductance_normalization[1]<RAMP_MIN&&data.inductance_normalization[2]<RAMP_MIN)//坡道
+            k++;
+    }
+    if(i==3)
+        element_flag=1;
+    else if(j==3)
+        element_flag=2;
+    else if(k==3)
+        element_flag=3;
+
+    //用于存储识别次数并进行标志消除//应该只有环岛需要进行元素标志消除
+    element_flag_array[element_flag]+=1;
+    if(element_flag_array[element_flag]==2)
+    {
+        element_flag_array[element_flag]=0;//直接将消除后的标志位变回直道
+    }
 }
 
 
-void RoundaboutProcess()
-{ 
-
-  //判断出两倍标志位后启动陀螺仪Z轴积分
-  
-  //切换两个竖直电感打角进环岛
-  
-  
-  
-  //切换三个水平电感环岛转弯
-
-
-  //陀螺仪z轴积分到360度消除环岛标志
-
-
-}
-
-void CrossProcess()
-{ 
-
-  
-
-
-}
-
-void RampProcess()
-{ 
-  
-  //方案一
-  //只用三水平电感直接过
-
-}
-
-void  RoadJunctionProcess()
-{
-  //暂时没想法
-}
-
-//void Element_Mode()//实时运行
+//void RoundaboutProcess()
 //{
-//  switch(element_flag)
-//    case 0:
-//      
+//
+//    //判断出两倍标志位后启动陀螺仪Z轴积分
+//
+//    //切换两个竖直电感打角进环岛
+//
+//
+//
+//    //切换三个水平电感环岛转弯
+//
+//
+//    //陀螺仪z轴积分到360度消除环岛标志
 //
 //
 //}
+//
+//void CrossProcess()
+//{
+//
+//
+//
+//
+//}
+//
+//void RampProcess()
+//{
+//
+//    //方案一
+//    //只用三水平电感直接过
+//
+//}
+//
+//void  RoadJunctionProcess()
+//{
+//    //暂时没想法
+//}
+
+//void Element_Mode()//实时运行
+//{
+//    switch (element_flag)
+//    {
+//        case 0://直道
+//            //三电感循迹
+//            break;
+//        case 1://环岛
+//        //
+//            break;
+//
+//
+//    }
+//
+//
+//
+//
+//}
+
+
+
+float ThreeInductorsTrace()
+{
+    //三电感差比和
+    float three_inductors_trace_output=
+        (fabs(data.inductance_normalization[0]-data.inductance_normalization[4])/fabs(data.inductance_normalization[0]+data.inductance_normalization[4])+data.inductance_normalization[2])/2;
+    return three_inductors_trace_output;
+}
+
+
+float TwoInductorsTrace()
+{
+    float two_inductors_trace_output=
+        (fabs(data.inductance_normalization[0]-data.inductance_normalization[4])/fabs(data.inductance_normalization[0]+data.inductance_normalization[4])+data.inductance_normalization[2])/2;
+    return two_inductors_trace_output;
+
+}
+
+float FiveInductorsTrace()
+{
+    float e1 = sqrt(data.inductance_normalization[0]*data.inductance_normalization[0]+data.inductance_normalization[4]*data.inductance_normalization[4]);   //√(x0*x0+x4*x4)
+    float e2 = sqrt(data.inductance_normalization[1]*data.inductance_normalization[1]+data.inductance_normalization[3]*data.inductance_normalization[3]);   //√(x1*x1+x3*x3)
+    float five_inductors_trace = (sqrt(e1)-sqrt(e2)) / (e1+e2);
+    return five_inductors_trace;
+}
+
+void TrackingMode()
+{
+    switch (tracking_mode_flag)
+    {
+        case 0://直线
+            ThreeInductorsTrace();
+            break;
+        case 1://弯道
+            ThreeInductorsTrace();
+            break;
+        case 2://环岛
+            if(data.inductance_normalization[1]>1|data.inductance_normalization[3]>1)//先识别了环岛标志在进入该if中
+            {
+                TwoInductorsTrace();
+            }
+            ThreeInductorsTrace();
+            break;
+        case 3://十字
+            ThreeInductorsTrace();
+            break;
+
+    }
+
+}

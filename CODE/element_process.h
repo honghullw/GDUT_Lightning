@@ -14,7 +14,11 @@
 #define RAMP_MAX 1
 #define RAMP_MIN 0
 
-
+void ElementRecognition();
+float ThreeInductorsTrace();
+float TwoInductorsTrace();
+float FiveInductorsTrace();
+void TrackingMode();
 
 
 
