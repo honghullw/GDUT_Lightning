@@ -33,10 +33,10 @@ extern e current_pid;
 
 void MotorControl()
 {
-    float casecade_pid_output=CasecadePid();
-    float other_pid_output=OtherPid();
-    float left_pwm=casecade_pid_output+other_pid_output;
-    float right_pwm=casecade_pid_output-other_pid_output;
+    float casecade_pid_output=CasecadePidOutput();
+    float other_pid_output=OtherPidOutput();
+    uint16 left_pwm=(uint16)(casecade_pid_output+other_pid_output);
+    uint16 right_pwm=(uint16)(casecade_pid_output-other_pid_output);
     MotorDrive(left_pwm,right_pwm);
 }
 

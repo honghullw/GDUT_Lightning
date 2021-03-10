@@ -19,10 +19,12 @@ typedef struct
     float filter_inductance_data[inductance_num];//ºËÐÄ
     float inductance_normalization[inductance_num];
     
+    float position_error;
+    
     float current_loop_data[current_num][current_sample_num];
     float filter_current_loop_data[current_num];//ºËÐÄ
     
-//    double 
+
 }a;
 
 typedef struct 

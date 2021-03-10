@@ -33,7 +33,7 @@ typedef struct
 }e;
 
 float PidControl();
-float CasecadePid(void);
-float OtherPid(void);
+float CasecadePidOutput(void);
+float OtherPidOutput(void);
 
 #endif

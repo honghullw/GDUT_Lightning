@@ -103,6 +103,7 @@ float DirectionErrorOutput2()
 {
     float DirectionErrorOutput=
     FastAbs((FastSqrt(data.inductance_normalization[0])-FastSqrt(data.inductance_normalization[4]))/(data.inductance_normalization[0]+data.inductance_normalization[2]));
+    data.position_error=DirectionErrorOutput;
     return DirectionErrorOutput;
 }
 

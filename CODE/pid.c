@@ -28,6 +28,7 @@ void PidInit() {
     angularspeed_pid.kd = 1;
     angularspeed_pid.actual_value = icm_gyro_y;//角速度实际值
     angularspeed_pid.goal_value = 0;//角度设定值
+
     angularspeed_pid.output_min = 0;
     angularspeed_pid.output_max = 0;
 
@@ -102,17 +103,20 @@ float PidControl(e pid) {
     return pid.output;
 }
 
-float CasecadePid()
+float CasecadePidOutput()
 {
 //串级pid函数式//笔推
-float casecade_pid_output=PidControl(angularspeed_pid)+angularspeed_pid.kp*PidControl(up_pid)+angularspeed_pid.kp*up_pid.kp*PidControl(speed_pid);
-    return casecade_pid_output;
+//float casecade_pid_output=PidControl(angularspeed_pid)+angularspeed_pid.kp*PidControl(up_pid)+angularspeed_pid.kp*up_pid.kp*PidControl(speed_pid);
+//    return casecade_pid_output;
+  
+  float casecade_pid_output=angularspeed_pid.output+angularspeed_pid.kp*up_pid.output+angularspeed_pid.kp*up_pid.kp*speed_pid.output;
+   return casecade_pid_output;
 }
 
 
-float OtherPid()
+float OtherPidOutput()
 {
-    return PidControl(direction_pid);
+    return direction_pid.output;
 }
 
 

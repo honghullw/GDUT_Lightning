@@ -95,7 +95,7 @@ void RoundaboutProcess()
 void CrossProcess()
 { 
 
-  //只用三水平电感直接过
+  
 
 
 }
@@ -112,3 +112,12 @@ void  RoadJunctionProcess()
 {
   //暂时没想法
 }
+
+//void Element_Mode()//实时运行
+//{
+//  switch(element_flag)
+//    case 0:
+//      
+//
+//
+//}
