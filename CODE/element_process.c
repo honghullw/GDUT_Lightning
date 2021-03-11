@@ -166,13 +166,13 @@ float FiveInductorsTrace()
 {
     float e1 = sqrt(data.inductance_normalization[0]*data.inductance_normalization[0]+data.inductance_normalization[4]*data.inductance_normalization[4]);   //√(x0*x0+x4*x4)
     float e2 = sqrt(data.inductance_normalization[1]*data.inductance_normalization[1]+data.inductance_normalization[3]*data.inductance_normalization[3]);   //√(x1*x1+x3*x3)
-    float five_inductors_trace = (sqrt(e1)-sqrt(e2)) / (e1+e2);
-    return five_inductors_trace;
+    float five_inductors_trace_output = (sqrt(e1)-sqrt(e2)) / (e1+e2);
+    return five_inductors_trace_output;
 }
 
 void TrackingMode()
 {
-    switch (tracking_mode_flag)
+    switch (element_flag)
     {
         case 0://直线
             ThreeInductorsTrace();
@@ -181,7 +181,7 @@ void TrackingMode()
             ThreeInductorsTrace();
             break;
         case 2://环岛
-            if(data.inductance_normalization[1]>1|data.inductance_normalization[3]>1)//先识别了环岛标志在进入该if中
+            if(data.inductance_normalization[1]>1|data.inductance_normalization[3]>1)//先识别了环岛标志再进入该if中
             {
                 TwoInductorsTrace();
             }

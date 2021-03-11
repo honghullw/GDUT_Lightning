@@ -64,23 +64,32 @@ void BMTest()
 
 
 
-void MotorTestInit()
-{
+//void MotorTestInit()
+//{
+// pwm_init (TIM_2, TIM_2_CH2_A12, 10000, 0);//一号电机
+// gpio_init(MOTOR1_DIR, GPI, GPIO_LOW, GPI_PULL_DOWN);	
+// 
+// pwm_init (TIM_2, TIM_2_CH1_A11, 10000, 0);//二号电机							
+// gpio_init(MOTOR2_DIR, GPI, GPIO_LOW, GPI_PULL_DOWN);
+// 
+//}
+
+void MotorTestInit(){
  pwm_init (TIM_2, TIM_2_CH2_A12, 10000, 0);//一号电机
- gpio_init(MOTOR1_DIR, GPI, GPIO_LOW, GPI_PULL_DOWN);	
+ gpio_init(MOTOR1_DIR, GPO, 1, GPO_PUSH_PULL);	
  
  pwm_init (TIM_2, TIM_2_CH1_A11, 10000, 0);//二号电机							
- gpio_init(MOTOR2_DIR, GPI, GPIO_LOW, GPI_PULL_DOWN);
+ gpio_init(MOTOR2_DIR, GPO, 1, GPO_PUSH_PULL);	
  
 }
 
 void MotorTest()
 {
-   pwm_duty_updata(TIM_2,TIM_2_CH2_A12,500*50);
-   gpio_set(MOTOR1_DIR,1);
+   pwm_duty_updata(TIM_2,TIM_2_CH2_A12,500*60);
+   gpio_set(MOTOR1_DIR,0);
    
-   pwm_duty_updata(TIM_2,TIM_2_CH1_A11,500*50);
-   gpio_set(MOTOR2_DIR,1);
+   pwm_duty_updata(TIM_2,TIM_2_CH1_A11,500*60);
+   gpio_set(MOTOR2_DIR,0);
 
 }
 

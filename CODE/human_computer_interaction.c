@@ -18,7 +18,7 @@ extern e current_pid;
 extern first_order_low_pass_filter_parameters first_filter1;
 
 uint16 mode_flag;
-uint16 interface_flag=0;//页面标志位
+int16 interface_flag=0;//页面标志位
 
 //按键状态
 uint16 key_up_state;
@@ -137,22 +137,279 @@ void OledViewParameters()//二级界面
 
 void OledViewCoefficient()//三级页面
 {
-    oled_p6x8str(50,0,"Coefficient");
+    oled_p6x8str(30,0,"Coefficient");
 
-    oled_p6x8str(0,1,"firstpass_parameters");//一阶低通滤波系数
-    oled_printf_float(50,1,first_filter1.low_pass_parameter,5,1);//转向P
+    oled_p6x8str(0,1,"firstparameters");//一阶低通滤波系数
+    oled_printf_float(100,1,first_filter1.low_pass_parameter,1,1);//转向P
 
-    oled_p6x8str(0,2,"pulse_speed_coefficient");
-    oled_printf_float(50,2,pulse_speed_coefficient,5,1);//转向I
+    oled_p6x8str(0,2,"pulse_speed");
+    oled_printf_float(100,2,pulse_speed_coefficient,5,1);//转向I
 
-    oled_p6x8str(0,3,"complementary_coefficient");
-    oled_printf_float(50,3,complementary_coefficient,5,1);//转向D
+    oled_p6x8str(0,3,"complementary");
+    oled_printf_float(100,3,complementary_coefficient,5,1);//转向D
 
 }
 
 
 
 /*-----------------------------------------------------------------------------module------------------------------------------------------------------------------------------------*/
+//void Mode()//拨码开关改变模式
+//{
+//    if(gpio_get(BMST) == 0 &&
+//        gpio_get(BMND) == 0 &&
+//        gpio_get(BMRD) == 0 &&
+//        gpio_get(BMTH) == 0)
+//        mode_flag=0;//页面切换
+//    else if(gpio_get(BMST) == 1 &&
+//            gpio_get(BMND) == 0 &&
+//            gpio_get(BMRD) == 0 &&
+//            gpio_get(BMTH) == 0)
+//        mode_flag=1;//速度参数调整
+//    else if(gpio_get(BMST) == 1 &&
+//            gpio_get(BMND) == 1 &&
+//            gpio_get(BMRD) == 0 &&
+//            gpio_get(BMTH) == 0)
+//        mode_flag=2;//方向参数调整
+//    else if(gpio_get(BMST) == 1 &&
+//            gpio_get(BMND) == 1 &&
+//            gpio_get(BMRD) == 1 &&
+//            gpio_get(BMTH) == 0)
+//        mode_flag=3;//系数调整
+////    else if
+////        (gpio_get(BM1) == 0 &&
+////            gpio_get(BM2) == 0 &&
+////            gpio_get(BM3) == 1 &&
+////            gpio_get(BM4) == 0)
+////        mode_flag=2;
+////    else if
+////        (gpio_get(BM1) == 0 &&
+////            gpio_get(BM2) == 0 &&
+////            gpio_get(BM3) == 1 &&
+////            gpio_get(BM4) == 1)
+////        mode_flag=3;
+////    else if
+////        (gpio_get(BM1) == 0 &&
+////            gpio_get(BM2) == 1 &&
+////            gpio_get(BM3) == 0 &&
+////            gpio_get(BM4) == 0)
+////        mode_flag=4;
+////    else if
+////        (gpio_get(BM1) == 0 &&
+////            gpio_get(BM2) == 1 &&
+////            gpio_get(BM3) == 0 &&
+////            gpio_get(BM4) == 1)
+////        mode_flag=5;
+////    else if
+////        (gpio_get(BM1) == 0 &&
+////            gpio_get(BM2) == 1 &&
+////            gpio_get(BM3) == 1 &&
+////            gpio_get(BM4) == 0)
+////        mode_flag=6;
+////    else if
+////        (gpio_get(BM1) == 0 &&
+////            gpio_get(BM2) == 1 &&
+////            gpio_get(BM3) == 1 &&
+////            gpio_get(BM4) == 1)
+////        mode_flag=7;
+////    else if
+////        (gpio_get(BM1) == 1 &&
+////            gpio_get(BM2) == 0 &&
+////            gpio_get(BM3) == 0 &&
+////            gpio_get(BM4) == 0)
+////        mode_flag=8;
+////    else if
+////        (gpio_get(BM1) == 1 &&
+////            gpio_get(BM2) == 0 &&
+////            gpio_get(BM3) == 0 &&
+////            gpio_get(BM4) == 1)
+////        mode_flag=9;
+//
+//    key_up_state=gpio_get(KEY_UP);
+//    key_down_state=gpio_get(KEY_DOWN);
+//    key_right_state=gpio_get(KEY_RIGHT);
+//    key_left_state=gpio_get(KEY_LEFT);
+//
+//    switch(mode_flag)
+//    {
+//        case 0:                   //切换页面
+//        {if(key_up_state)
+//            {
+//                interface_flag=0;//关闭oled
+//                oled_fill(0x00);
+//                key_up_state=0;
+//            } else if(key_down_state)
+//            {
+//                interface_flag=1;//一级页面
+//                oled_fill(0x00);
+//                key_down_state=0;//关掉其余页面的标志位
+//            }else if(key_right_state)
+//            {
+//                interface_flag=2;//二级页面
+//                oled_fill(0x00);
+//                key_right_state=0;
+//            }else if(key_left_state)
+//            {
+//                interface_flag=3;//三级页面
+//                oled_fill(0x00);
+//                key_left_state=0;
+//            }
+//        }break;
+//        case 1:                  //调速度参数
+//        {if(key_up_state)
+//            {
+//                speed_pid.kp+=1;
+//                key_up_state=0;
+//            } else if(key_down_state)
+//            {
+//                speed_pid.kp-=1;
+//                key_down_state=0;
+//            }else if(key_right_state)
+//            {
+//                speed_pid.ki+=1;
+//                key_right_state=0;
+//            }else if(key_left_state)
+//            {
+//                speed_pid.ki+=1;
+//                key_left_state=0;
+//            }
+//        }break;
+//        case 2:                  //调方向参数
+//        {if(key_up_state)
+//            {
+//                direction_pid.kp+=1;
+//                key_up_state=0;
+//            } else if(key_down_state)
+//            {
+//                direction_pid.kp-=1;
+//                key_down_state=0;
+//            }else if(key_right_state)
+//            {
+//                direction_pid.kd+=1;
+//                key_right_state=0;
+//            }else if(key_left_state)
+//            {
+//                direction_pid.kd-=1;
+//                key_left_state=0;
+//            }
+//        }break;
+//        case 3:                  //调小车系数
+//        {if(key_up_state)
+//            {
+//                first_filter1.low_pass_parameter+=0.1;
+//                key_up_state=0;
+//            } else if(key_down_state)
+//            {
+//                first_filter1.low_pass_parameter-=0.1;
+//                key_down_state=0;
+//            }
+//        }break;
+//        default:
+//            break;
+////            else if(key_right_state)
+////            {
+////                pulse_speed_coefficient+=1;
+////                key_right_state=0;
+////            }else if(key_left_state)
+////            {
+////                pulse_speed_coefficient-=1;
+////                key_left_state=0;
+////            }break;
+//
+//
+//    }
+//
+//
+//    switch(interface_flag)
+//    {
+//        case 0:
+//            break;
+//        case 1:
+//            OledViewPhysicalCondition();//小车状态
+//            break;
+//        case 2:
+//            OledViewParameters();//小车pid参数
+//            break;
+//        case 3:
+//            OledViewCoefficient();//小车系数
+//            break;
+//    }
+//
+////    switch(mode_flag)
+////    {
+////        case 0:
+////
+////            if(gpio_get(KEY1) == 1)
+////            {
+////                systick_delay_ms(100);
+////                if(gpio_get(KEY1) == 1)
+////                    interface_flag=1;//界面flag
+////                OledViewSpecification();//一级界面
+////            }
+////            if(gpio_get(KEY2) == 1)
+////            {
+////                systick_delay_ms(100);
+////                if(gpio_get(KEY2) == 1)
+////                    interface_flag=2;//界面flag
+////                OledViewPhysicalCondition();//二级界面
+////            }
+////            if(gpio_get(KEY3) == 1)
+////            {
+////                systick_delay_ms(100);
+////                if(gpio_get(KEY3) == 1)
+////                    interface_flag=3;//界面flag
+////                OledViewParameters();//三级界面
+////            }
+////            if(gpio_get(KEY3) == 1)
+////            {
+////                systick_delay_ms(100);
+////                if(gpio_get(KEY3) == 1)
+////                    interface_flag=4;//界面flag
+////                OledViewCoefficient();//四级界面
+////            }
+////            break;
+////        case 1:
+////            switch(interface_flag)
+////                case 1:
+////                    OledViewSpecification();//一级界面
+////                    break;
+////                case 2:
+////                    OledViewPhysicalCondition();
+////                    break;
+////                case 3:
+////                    OledViewParameters();//三级界面
+////                    break;
+////                case 4:
+////                    OledViewCoefficient();//四级界面
+////                    break;
+////            if(gpio_get(KEY1) == 1)
+////            {
+////                systick_delay_ms(100);
+////                if(gpio_get(KEY1) == 1)
+////                  OledViewSpecification();
+////            }
+////            if(gpio_get(KEY2) == 1)
+////            {
+////                systick_delay_ms(100);
+////                if(gpio_get(KEY2) == 1)
+////                    OledViewPhysicalCondition();//二级界面
+////            }
+////            if(gpio_get(KEY3) == 1)
+////            {
+////                systick_delay_ms(100);
+////                if(gpio_get(KEY3) == 1)
+////                    OledViewParameters();//三级界面
+////            }
+////            if(gpio_get(KEY3) == 1)
+////            {
+////                systick_delay_ms(100);
+////                if(gpio_get(KEY3) == 1)
+////                    OledViewCoefficient();//四级界面
+////            }
+////            break;
+//
+//}
+
+
 void Mode()//拨码开关改变模式
 {
     if(gpio_get(BMST) == 0 &&
@@ -161,19 +418,19 @@ void Mode()//拨码开关改变模式
         gpio_get(BMTH) == 0)
         mode_flag=0;//页面切换
     else if(gpio_get(BMST) == 1 &&
-            gpio_get(BMND) == 0 &&
-            gpio_get(BMRD) == 0 &&
-            gpio_get(BMTH) == 0)
+        gpio_get(BMND) == 0 &&
+        gpio_get(BMRD) == 0 &&
+        gpio_get(BMTH) == 0)
         mode_flag=1;//速度参数调整
     else if(gpio_get(BMST) == 1 &&
-            gpio_get(BMND) == 1 &&
-            gpio_get(BMRD) == 0 &&
-            gpio_get(BMTH) == 0)
+        gpio_get(BMND) == 1 &&
+        gpio_get(BMRD) == 0 &&
+        gpio_get(BMTH) == 0)
         mode_flag=2;//方向参数调整
     else if(gpio_get(BMST) == 1 &&
-            gpio_get(BMND) == 1 &&
-            gpio_get(BMRD) == 1 &&
-            gpio_get(BMTH) == 0)
+        gpio_get(BMND) == 1 &&
+        gpio_get(BMRD) == 1 &&
+        gpio_get(BMTH) == 0)
         mode_flag=3;//系数调整
 //    else if
 //        (gpio_get(BM1) == 0 &&
@@ -224,6 +481,7 @@ void Mode()//拨码开关改变模式
 //            gpio_get(BM4) == 1)
 //        mode_flag=9;
 
+        systick_delay_ms(50);
     key_up_state=gpio_get(KEY_UP);
     key_down_state=gpio_get(KEY_DOWN);
     key_right_state=gpio_get(KEY_RIGHT);
@@ -234,22 +492,30 @@ void Mode()//拨码开关改变模式
         case 0:                   //切换页面
         {if(key_up_state)
             {
-                interface_flag=0;//关闭oled
+                interface_flag--;//向下切换页面
+                if(interface_flag<0)//防止interface_flag<0;
+                {
+                    interface_flag=0;
+                }
                 oled_fill(0x00);
                 key_up_state=0;
             } else if(key_down_state)
             {
-                interface_flag=1;//一级页面
+                interface_flag++;//向上切换页面
+                if(interface_flag>3)//防止interface_flag>3;
+                {
+                    interface_flag=3;
+                }
                 oled_fill(0x00);
                 key_down_state=0;//关掉其余页面的标志位
             }else if(key_right_state)
             {
-                interface_flag=2;//二级页面
+                interface_flag=4;//进入图像页面
                 oled_fill(0x00);
                 key_right_state=0;
-            }else if(key_left_state)
+            }else if(key_left_state)//退出图像页面
             {
-                interface_flag=3;//三级页面
+                interface_flag=0;//降低页面亮度页面
                 oled_fill(0x00);
                 key_left_state=0;
             }
@@ -331,6 +597,9 @@ void Mode()//拨码开关改变模式
             break;
         case 3:
             OledViewCoefficient();//小车系数
+            break;
+        case 4:
+            //图像页面
             break;
     }
 

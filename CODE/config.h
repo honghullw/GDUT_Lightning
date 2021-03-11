@@ -17,7 +17,7 @@
 
 //电机排放位置
 #define MOTOR1_DIR D2   //电机从左往右
-#define MOTOR2_DIR D1
+#define MOTOR2_DIR D3   //右电机
 
 //小灯排放位置
 #define LED_UP D7
