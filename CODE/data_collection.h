@@ -4,13 +4,15 @@
 #include "headfile.h"
 
 #define inductance_num 5
-#define sample_num 5
+#define sample_num 8
 #define current_num 5
 #define current_sample_num 5
 
 #define pulse_speed_coefficient 5  //将脉冲数转m/s
 
 #define Pi 3.14
+
+#define FILTER_NUM 5
 
 typedef struct
 {
@@ -42,8 +44,10 @@ typedef struct
   int16 accelarate_z_data;
   
   int16 angular_speed_x_data;    //角速度的数据     
-  int16 angular_speed_y_data;
+  float angular_speed_y_data;
   int16 angular_speed_z_data;
+  
+  float angular_speed_y_filter_data;
   
   float accelerate_angle_value;         //加速度计的俯仰角值
   float angularspeed_angle_value;       //角速度的俯仰角值

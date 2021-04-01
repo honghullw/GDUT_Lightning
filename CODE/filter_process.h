@@ -17,7 +17,7 @@ void MedianAverageFilter();
 
 void TimeWeightFilter();
 
-float FirstLowFilter(first_order_low_pass_filter_parameters filter,float data);
+float FirstLowFilter(first_order_low_pass_filter_parameters *filter,float data);
 
 
 #endif

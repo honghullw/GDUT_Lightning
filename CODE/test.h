@@ -3,19 +3,6 @@
 
 #include "headfile.h"
 
-
-
-void KeyTestInit();
-void KeyTest();
-
-
-void BMTestInit();
-void BMTest();
-
-void MotorTestInit();
-void MotorTest();
-
-void EncoderTestInit();
-void EncoderTest();
+void Gyro_Ang_Caculate();
 
 #endif

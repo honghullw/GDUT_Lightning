@@ -6,7 +6,8 @@ extern a data;
 extern b speed_data;
 extern c angle_data;
 
-first_order_low_pass_filter_parameters first_filter1;
+first_order_low_pass_filter_parameters first_filter1={0};
+
 //-------------------------------------------------------------------------------------------------------------------
 // @brief		中位值平均滤波法（又称防脉冲干扰平均滤波法）
 // @param		ch				选择ADC通道
@@ -80,13 +81,31 @@ void TimeWeightFilter()
 // Sample usage:				adc_init(ADC_1, ADC1_CH00_A00, ADC_8BIT);						//初始化A00为ADC功能 分辨率为8位
 //-------------------------------------------------------------------------------------------------------------------
 
-float FirstLowFilter(first_order_low_pass_filter_parameters filter,float data)
+float FirstLowFilter(first_order_low_pass_filter_parameters *filter,float data)
 {
-  filter.sample_data = data;
-  filter.output_last = filter.output;
+  filter->low_pass_parameter=0.3;
+  filter->sample_data = data;
+  filter->output_last = filter->output;
   
-  filter.output = filter.low_pass_parameter * filter.sample_data
-        + (1.0 - filter.low_pass_parameter) * filter.output_last;
-  return filter.output;
+  filter->output = filter->low_pass_parameter * filter->sample_data
+        + (1.0 - filter->low_pass_parameter) * filter->output_last;
+  return filter->output;
     
 }
+
+//-------------------------------------------------------------------------------------------------------------------
+// @brief		角速度滤波
+// @param		ch				选择ADC通道
+// @param		resolution		选择选择通道分辨率(如果同一个模块初始化时设置了不同的分辨率 则第一个初始化的分辨率生效)
+// @return		void
+// Sample usage:				adc_init(ADC_1, ADC1_CH00_A00, ADC_8BIT);						//初始化A00为ADC功能 分辨率为8位
+//-------------------------------------------------------------------------------------------------------------------
+//float AverageFilter()
+//{
+//  uint8 i;
+//  for(i=0;i<FILTER_NUM;i++)
+//  {
+//    
+//  }
+//   
+//}

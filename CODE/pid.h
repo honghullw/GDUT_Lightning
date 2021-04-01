@@ -20,7 +20,7 @@ typedef struct
 
 typedef struct 
 {
-    float kp, ki, kd;
+    double kp, ki, kd;
     float error;                            //当前误差(current error)
     float error_last;                          //上次的误差(last current)
     float goal_value;                       //预期值
@@ -28,12 +28,16 @@ typedef struct
     float output;                           //pid计算后最终的输出值
     float output_max, output_min;           //输出值的最大/最小值
     float Integral_max;                     //积分项所能累加的最大值(warining:该值应该设为正值)
+    float Integral_min;   
     float Integral;                         //积分项I
     float Differential;                     //微分项D
+    float error_low;
+    float error_last_low;
 }e;
 
+void PidInit();
 float PidControl();
-float CasecadePidOutput(void);
-float OtherPidOutput(void);
+float CasecadePid(void);
+float OtherPid(void);
 
 #endif

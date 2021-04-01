@@ -10,6 +10,12 @@ extern e up_pid;
 extern e speed_pid;
 extern e direction_pid;
 extern e current_pid;
+
+extern float balance_angle_value;//小车处于平衡位置的俯仰角（用按键去修改）
+
+float temp1 = 0;
+
+float complementary_coefficient=0.9;//互补滤波系数
 //-------------------------------------------------------------------------------------------------------------------
 // @brief		??????????
 // @param		ch				???ADC???
@@ -18,10 +24,15 @@ extern e current_pid;
 // Sample usage:				adc_init(ADC_1, ADC1_CH00_A00, ADC_8BIT);						//?????A00?ADC???? ??????8λ
 //-------------------------------------------------------------------------------------------------------------------
 void AngularSpeedAngleCalculate(){
+//  if((angle_data.angular_speed_y_data<5)&&(angle_data.angular_speed_y_data>-5))//去皮
+//  angle_data.angular_speed_y_data = 0;//减去零点角速度偏差
+//  angle_data.angularspeed_angle_value=angle_data.angularspeed_angle_value+angle_data.angular_speed_y_data*change_angle_coefficient;
+////angle_data.angularspeed_angle_value=angle_data.angularspeed_angle_value+angle_data.angular_speed_y_data;
   
-  angle_data.angular_speed_y_data-=zero_angular_speed_y_data;//?????????????????????
-  angle_data.angularspeed_angle_value=angle_data.angularspeed_angle_value+angle_data.angular_speed_y_data*change_angle_coefficient;//?????????????????????????????????????ж?????
-
+//    if((angle_data.angular_speed_y_data<1)&&(angle_data.angular_speed_y_data>-1))//去皮
+//  angle_data.angular_speed_y_data = 0;//减去零点角速度偏差
+  angle_data.angularspeed_angle_value=angle_data.angularspeed_angle_value+angle_data.angular_speed_y_data;
+  temp1=angle_data.angularspeed_angle_value;
 }
 
 
@@ -34,9 +45,17 @@ void AngularSpeedAngleCalculate(){
 //-------------------------------------------------------------------------------------------------------------------
 void FuseAngleCalculate(){
 
-angle_data.angularspeed_angle_value=angle_data.angularspeed_angle_value+(angle_data.accelerate_angle_value-angle_data.angularspeed_angle_value)*complementary_coefficient;//???????????????????
+//angle_data.angularspeed_angle_value=angle_data.angularspeed_angle_value+(angle_data.accelerate_angle_value-angle_data.angularspeed_angle_value-93.9)*complementary_coefficient;//???????????????????
+//angle_data.fuse_angle_value=angle_data.angularspeed_angle_value+94;//????????????????????????
+//angle_data.fuse_angle_pid_value=angle_data.fuse_angle_value-balance_angle_value;//??????λ??????0//????pid????
+  
+//  temp1=temp1+(angle_data.accelerate_angle_value-temp1)*complementary_coefficient;//这样写应该是有问题的，因为角速度的初始值从0开始就会很慢
+//angle_data.fuse_angle_value=temp1;//????????????????????????
+//angle_data.fuse_angle_pid_value=angle_data.fuse_angle_value-balance_angle_value;//??????λ??????0//????pid????
+  
+    angle_data.angularspeed_angle_value=angle_data.angularspeed_angle_value+(angle_data.accelerate_angle_value-angle_data.angularspeed_angle_value)*complementary_coefficient;//???????????????????
 angle_data.fuse_angle_value=angle_data.angularspeed_angle_value;//????????????????????????
-angle_data.fuse_angle_pid_value=angle_data.fuse_angle_value-balance_angle_value;//??????λ??????0//????pid????
+angle_data.fuse_angle_pid_value=angle_data.fuse_angle_value-balance_angle_value;//??????λ??????0//????pid???
 
 }
 
